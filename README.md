@@ -84,7 +84,7 @@ The `.mcp.json` at the project root tells Claude Code where to find the MCP serv
   "mcpServers": {
     "tradingview": {
       "command": "node",
-      "args": ["/absolute/path/to/claude-tv-mcp/tradingview-mcp/src/server.js"]
+      "args": ["/absolute/path/to/tradingview-analyst-mcp/tradingview-mcp/src/server.js"]
     }
   }
 }
@@ -122,7 +122,7 @@ Alternatively, after connecting Claude, use the `tv_launch` MCP tool — it auto
 
 **Claude Code (reference setup):**
 ```bash
-cd /path/to/claude-tv-mcp
+cd /path/to/tradingview-analyst-mcp
 code .
 ```
 Claude Code auto-detects `.mcp.json` and connects the MCP server. `CLAUDE.md` is auto-loaded as the AI's instructions every session.
@@ -161,7 +161,7 @@ Claude reads whatever symbol is currently on your TradingView chart — no need 
 ## Project Structure
 
 ```
-claude-tv-mcp/
+tradingview-analyst-mcp/
 ├── .mcp.json                        ← MCP server config (Claude reads on startup)
 ├── CLAUDE.md                        ← AI instructions: strategy rules, analysis flow, tools list
 ├── README.md                        ← This file
@@ -326,7 +326,7 @@ The `.mcp.json` format is standard across most clients:
   "mcpServers": {
     "tradingview": {
       "command": "node",
-      "args": ["/absolute/path/to/claude-tv-mcp/tradingview-mcp/src/server.js"]
+      "args": ["/absolute/path/to/tradingview-analyst-mcp/tradingview-mcp/src/server.js"]
     }
   }
 }
