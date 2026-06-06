@@ -1,6 +1,8 @@
-# User's Guide — DSE Stock Analysis with Claude AI
+# User's Guide — Stock Analysis with AI + TradingView MCP
 
-How to get the most out of this system: every prompt pattern, workflow, strategy, and tip for analyzing DSE stocks using Claude + TradingView.
+How to get the most out of this system: every prompt pattern, workflow, strategy, and tip for analyzing stocks using an AI client connected to TradingView via MCP.
+
+> This guide uses **Claude Code** as the reference AI client. The same prompts and workflows work in any MCP-compatible client (Cursor, Cline, Windsurf, etc.) with GPT-4, DeepSeek, Gemini, or any supported model — just pass `CLAUDE.md` as your system prompt instead of relying on auto-load. Examples in this guide use DSE (Dhaka Stock Exchange) stocks, but all workflows apply to any exchange.
 
 ---
 
@@ -12,15 +14,17 @@ How to get the most out of this system: every prompt pattern, workflow, strategy
   ```bash
   bash tradingview-mcp/scripts/launch_tv_debug_mac.sh
   ```
-- [ ] Open this project in Claude Code (VS Code)
+- [ ] Open this project in your AI client (Claude Code, Cursor, Cline, etc.)
 - [ ] Open your target stock on TradingView
-- [ ] Verify connection — ask Claude:
+- [ ] Verify connection — ask the AI:
   > *"Run tv_health_check"*
 - [ ] You're ready
 
+> **Using a non-Claude client?** Make sure you've pasted `CLAUDE.md` contents as your system prompt so the AI has the strategy rules loaded. Claude Code does this automatically; other clients don't.
+
 ### First-Time Setup
 
-If you've never used this before, see [README.md](README.md) for full installation steps.
+If you've never used this before, see [README.md](README.md) for full installation steps including client-specific MCP configuration.
 
 ---
 

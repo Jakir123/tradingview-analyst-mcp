@@ -1,10 +1,12 @@
-# Stock Analysis with Claude AI + TradingView MCP
+# Stock Analysis with AI + TradingView MCP
 
-A local AI stock analysis system that connects **Claude Code** directly to **TradingView Desktop** via the Model Context Protocol (MCP). Ask Claude in plain English to analyze any chart on any exchange — read live indicators, apply strategy frameworks, set alerts, and get structured trade setups — all without leaving your editor.
+A local AI stock analysis system that connects **any MCP-compatible AI client** directly to **TradingView Desktop** via the Model Context Protocol (MCP). Ask your AI in plain English to analyze any chart on any exchange — read live indicators, apply strategy frameworks, set alerts, and get structured trade setups — all without leaving your editor.
 
 Works with any market TradingView supports: stocks, forex, crypto, futures, indices — on any exchange worldwide.
 
-> This project is configured for **DSE (Dhaka Stock Exchange)** as its primary use case, with DSE-specific strategy rules and filters in the `strategies/` folder. The core system is fully exchange-agnostic — point it at any TradingView chart and it works.
+> **AI client:** This project uses **Claude Code** as the reference implementation. Any MCP-compatible client works — Cursor, Cline (with GPT-4, DeepSeek, Gemini, or any model), Windsurf, Continue, and others. See [Using with Other AI Clients](#using-with-other-ai-clients) for setup notes.
+
+> **Exchange:** Configured for **DSE (Dhaka Stock Exchange)** as its primary use case, with DSE-specific strategy rules in `strategies/dse_rules.md`. The core system is fully exchange-agnostic — point it at any TradingView chart and it works.
 
 ---
 
@@ -27,7 +29,7 @@ All data stays on your machine. The MCP server is a local bridge only — nothin
 ```
 You (natural language prompt)
          ↕
-    Claude Code  (AI brain — reads CLAUDE.md for strategy rules)
+    AI Client  (Claude Code / Cursor / Cline / Windsurf / etc.)
          ↕  MCP Protocol (stdio)
   tradingview-mcp/src/server.js  ←── local Node.js process
          ↕  Chrome DevTools Protocol (localhost:9222)
@@ -39,12 +41,12 @@ You (natural language prompt)
 ### How a Request Flows
 
 1. You type — e.g., *"Analyze this chart with Weinstein Stage Analysis"*
-2. Claude reads `CLAUDE.md` (auto-loaded) to apply the configured strategy rules
-3. Claude calls MCP tools — `chart_get_state`, `data_get_ohlcv`, `data_get_study_values`, etc.
+2. The AI client reads the strategy instructions (via `CLAUDE.md` in Claude Code, or system prompt in other clients)
+3. The AI calls MCP tools — `chart_get_state`, `data_get_ohlcv`, `data_get_study_values`, etc.
 4. The MCP server (`tradingview-mcp/src/server.js`) receives each tool call
 5. Server talks to TradingView via Chrome DevTools Protocol on `localhost:9222`
 6. TradingView returns live data — bars, indicator values, quote — for whatever symbol is on screen
-7. Claude analyses the data, applies the strategy frameworks, and responds with a structured report
+7. The AI analyses the data, applies the strategy frameworks, and responds with a structured report
 
 ---
 
@@ -52,13 +54,15 @@ You (natural language prompt)
 
 | Requirement | Details |
 |---|---|
-| OS | macOS recommended (Windows/Linux also supported — see platform notes below) |
+| OS | macOS recommended (Windows/Linux also supported) |
 | TradingView Desktop | Download from [tradingview.com/desktop](https://www.tradingview.com/desktop/) |
 | Node.js | v18+ — check with `node --version` |
-| Claude Code | VS Code extension or CLI — [install guide](https://docs.anthropic.com/claude-code) |
+| MCP-compatible AI client | Claude Code (reference), Cursor, Cline, Windsurf, Continue, or any MCP-supporting client |
 | TradingView plan | Any plan with access to your target exchange's data |
 
-> **Exchange data:** TradingView supports NYSE, NASDAQ, LSE, BSE, DSE, SGX, crypto exchanges, forex, and more. You need a TradingView plan that includes data for your exchange. This project uses `DSEBD:` prefix symbols for DSE, but any TradingView symbol format works.
+> **AI client:** Any client that supports MCP will work with this project. Claude Code is used here as the reference — it auto-loads `CLAUDE.md` which contains the strategy instructions. Other clients need those instructions passed as a system prompt (see [Using with Other AI Clients](#using-with-other-ai-clients)).
+
+> **Exchange data:** TradingView supports NYSE, NASDAQ, LSE, BSE, DSE, SGX, crypto exchanges, forex, and more. This project uses `DSEBD:` prefix symbols for DSE as its reference, but any TradingView symbol format works.
 
 ---
 
@@ -114,14 +118,17 @@ tradingview --remote-debugging-port=9222
 
 Alternatively, after connecting Claude, use the `tv_launch` MCP tool — it auto-detects your platform and launches TradingView with the right flags.
 
-### Step 4 — Open Project in Claude Code
+### Step 4 — Open Project in Your AI Client
 
+**Claude Code (reference setup):**
 ```bash
 cd /path/to/claude-tv-mcp
 code .
 ```
+Claude Code auto-detects `.mcp.json` and connects the MCP server. `CLAUDE.md` is auto-loaded as the AI's instructions every session.
 
-Claude Code's VS Code extension auto-detects `.mcp.json` and connects the MCP server on startup.
+**Other MCP clients (Cursor, Cline, Windsurf, etc.):**
+Point the client at this project folder and add the `.mcp.json` server config in your client's MCP settings. Then paste the contents of `CLAUDE.md` as your system prompt so the AI has the strategy rules. See [Using with Other AI Clients](#using-with-other-ai-clients) for details.
 
 ### Step 5 — Verify Connection
 
@@ -290,6 +297,49 @@ CONFIDENCE:    [High / Medium / Low]
 REASON:        [2–3 sentences explaining the setup]
 RISK:          [Key risk to watch]
 ```
+
+---
+
+## Using with Other AI Clients
+
+The `tradingview-mcp` server is a plain MCP protocol server — it has no dependency on Claude or any specific AI model. **Any MCP-compatible client can connect to it.**
+
+### Supported Clients
+
+| Client | Supported AI Models | Notes |
+|---|---|---|
+| **Claude Code** | Claude | Reference setup — `CLAUDE.md` auto-loads |
+| **Cursor** | GPT-4, Claude, Gemini, DeepSeek | Add `.mcp.json` in Cursor MCP settings |
+| **Cline** (VS Code extension) | GPT-4, Claude, DeepSeek, any OpenAI-compatible | Add server in Cline MCP config |
+| **Windsurf** | Multiple models | MCP supported natively |
+| **Continue** (VS Code extension) | GPT-4, Claude, DeepSeek, local models | MCP supported |
+| **ChatGPT web** | GPT-4 | ❌ No MCP support |
+| **DeepSeek web** | DeepSeek | ❌ No MCP support |
+
+### Setup for Non-Claude Clients
+
+**1. Add the MCP server to your client's config**
+
+The `.mcp.json` format is standard across most clients:
+```json
+{
+  "mcpServers": {
+    "tradingview": {
+      "command": "node",
+      "args": ["/absolute/path/to/claude-tv-mcp/tradingview-mcp/src/server.js"]
+    }
+  }
+}
+```
+In Cursor: Settings → MCP → add server. In Cline: MCP Servers panel → add manually.
+
+**2. Pass strategy instructions as a system prompt**
+
+Unlike Claude Code, other clients don't auto-load `CLAUDE.md`. Copy its contents and paste it as your system prompt or custom instructions. This gives the AI the strategy frameworks, DSE rules, and analysis flow.
+
+**3. Everything else is identical**
+
+The 78 TradingView tools work the same regardless of which AI model is calling them. The analysis quality depends on the model — Claude, GPT-4, and DeepSeek all perform well for this type of structured financial analysis.
 
 ---
 
