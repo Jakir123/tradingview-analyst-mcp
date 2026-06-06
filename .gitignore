@@ -1,6 +1,9 @@
 # MCP server dependencies (install with: cd tradingview-mcp && npm install)
 tradingview-mcp/node_modules/
 
+# MCP config — contains system-specific paths and settings
+.mcp.json
+
 # Screenshots saved by the MCP server
 screenshots/
 

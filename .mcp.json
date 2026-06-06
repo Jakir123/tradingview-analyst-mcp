@@ -1,8 +1,0 @@
-{
-  "mcpServers": {
-    "tradingview": {
-      "command": "node",
-      "args": ["/Users/ssle1/Documents/Personal/stock_market/stock-analysis/tradingview-analyst-mcp/tradingview-mcp/src/server.js"]
-    }
-  }
-}
