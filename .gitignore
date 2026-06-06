@@ -1,0 +1,12 @@
+# MCP server dependencies (install with: cd tradingview-mcp && npm install)
+tradingview-mcp/node_modules/
+
+# Screenshots saved by the MCP server
+screenshots/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor
+.vscode/settings.json

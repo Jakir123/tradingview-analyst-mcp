@@ -1,0 +1,3 @@
+[submodule "tradingview-mcp"]
+	path = tradingview-mcp
+	url = https://github.com/tradesdontlie/tradingview-mcp.git
